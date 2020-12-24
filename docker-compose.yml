@@ -1,0 +1,18 @@
+version: '3.6'
+services:
+  mysql:
+    image: mysql:5.7.26
+    container_name: mysql_real_estate
+    environment:
+      - MYSQL_HOST=localhost
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=mysql_real_estate
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - TZ=America/Fortaleza
+    command: mysqld --lower_case_table_names=1 --sql-mode="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" --skip-ssl
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./data/mysql/:/var/lib/mysql"
