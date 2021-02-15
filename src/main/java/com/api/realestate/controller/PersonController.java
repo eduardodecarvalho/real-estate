@@ -33,7 +33,7 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public void update(@PathVariable Long id, @RequestBody PersonDTO personDTO) {
+    public void update(@PathVariable Long id, @RequestBody PersonDTO personDTO) throws NotFoundException {
         personDTO.setId(id);
         personService.update(personDTO);
     }

@@ -21,11 +21,12 @@ public class Person {
     public Person() {
     }
 
-    public Person(Long id, String name, String email, String password) {
+    public Person(Long id, String name, String email, String password, Integer personRole) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.personRole = personRole;
     }
 
     public Long getId() {

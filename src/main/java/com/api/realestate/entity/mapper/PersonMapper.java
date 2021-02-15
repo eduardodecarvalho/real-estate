@@ -6,7 +6,7 @@ import com.api.realestate.entity.dto.PersonDTO;
 public class PersonMapper {
 
     public static Person marshall(PersonDTO dto) {
-        return new Person(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword());
+        return new Person(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword(), dto.getPersonRole());
     }
 
     public static PersonDTO unmarshall(Person person) {
