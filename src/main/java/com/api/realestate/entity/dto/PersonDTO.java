@@ -1,13 +1,19 @@
 package com.api.realestate.entity.dto;
 
-public class PersonDTO {
+import com.api.realestate.entity.Person;
+
+import java.io.Serializable;
+
+public class PersonDTO implements Serializable {
 
     private Long id;
     private String name;
     private String email;
     private String password;
+    private Integer personRole;
 
-    public PersonDTO(PersonDTO byId) {
+    public PersonDTO() {
+
     }
 
     public PersonDTO(Long id, String name, String email, String password) {
@@ -15,6 +21,14 @@ public class PersonDTO {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public PersonDTO(Person person) {
+        this.id = person.getId();
+        this.name = person.getName();
+        this.email = person.getEmail();
+        this.password = person.getPassword();
+        this.personRole = person.getPersonRole();
     }
 
     public Long getId() {
@@ -47,5 +61,13 @@ public class PersonDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getPersonRole() {
+        return personRole;
+    }
+
+    public void setPersonRole(Integer personRole) {
+        this.personRole = personRole;
     }
 }

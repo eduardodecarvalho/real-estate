@@ -11,11 +11,12 @@ import javax.persistence.*;
 public class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String email;
     private String password;
+    private Integer personRole;
 
     public Person() {
     }
@@ -58,5 +59,13 @@ public class Person {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getPersonRole() {
+        return personRole;
+    }
+
+    public void setPersonRole(Integer personRole) {
+        this.personRole = personRole;
     }
 }
