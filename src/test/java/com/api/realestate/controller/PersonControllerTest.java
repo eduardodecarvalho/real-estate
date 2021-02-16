@@ -2,14 +2,13 @@ package com.api.realestate.controller;
 
 import com.api.realestate.config.SpringBootIntegrationTest;
 import com.api.realestate.entity.dto.PersonDTO;
+import com.api.realestate.entity.mapper.PersonMapper;
 import com.api.realestate.repository.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import org.json.JSONException;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -17,16 +16,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ActiveProfiles(profiles = "test")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PersonControllerTest extends SpringBootIntegrationTest {
 
     @Autowired
     private PersonRepository personRepository;
+
+    private PersonMapper personMapper;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -52,7 +50,7 @@ public class PersonControllerTest extends SpringBootIntegrationTest {
 
         Integer createdId = JsonPath.read(responseEntity.getBody(), "$.id");
 
-        PersonDTO actual = new PersonDTO(personRepository.findById(Long.valueOf(createdId)).get());
+        PersonDTO actual = PersonMapper.unmarshall(personRepository.findById(Long.valueOf(createdId)).get());
 
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getEmail(), actual.getEmail());
@@ -67,7 +65,7 @@ public class PersonControllerTest extends SpringBootIntegrationTest {
     }
 
     @Test
-    public void b_findById_withValidId() {
+    public void findById_withValidId() {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(HTTP_LOCALHOST + port + V_1_PERSONS + VALID_ID, String.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
@@ -82,7 +80,7 @@ public class PersonControllerTest extends SpringBootIntegrationTest {
     }
 
     @Test
-    public void a_findAll() throws JSONException {
+    public void findAll() throws JSONException {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(HTTP_LOCALHOST + port + V_1_PERSONS, String.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
@@ -91,7 +89,6 @@ public class PersonControllerTest extends SpringBootIntegrationTest {
                 "{\"id\":2,\"name\":\"Robin Scherbatsky\",\"email\":\"robin.sparkles@email.com.ca\",\"password\":\"$2a$10$3.WoOJ2Jq8z3UyOa5eZZduTpZX1EZGcqp53YojnRqrX60ZvHEkPS6\",\"personRole\":2}," +
                 "{\"id\":3,\"name\":\"Barney Stinson\",\"email\":\"stinson@email.com\",\"password\":\"$2a$10$dTGz9/0Qk3I.5b4Q9U47WuXfAAXuyl2AEZzpcS0r.St7kNEoWR8HW\",\"personRole\":99}" +
                 "]";
-
         JSONAssert.assertEquals(expected, responseEntity.getBody(), false);
     }
 
@@ -110,7 +107,7 @@ public class PersonControllerTest extends SpringBootIntegrationTest {
                 String.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
-        String actual = new ObjectMapper().writeValueAsString(new PersonDTO(personRepository.findById(VALID_ID).get()));
+        String actual = new ObjectMapper().writeValueAsString(PersonMapper.unmarshall(personRepository.findById(VALID_ID).get()));
         String expected = "{" +
                 "\"id\":1," +
                 "\"name\":\"Ted Evelyn Mosby\"," +
@@ -122,8 +119,8 @@ public class PersonControllerTest extends SpringBootIntegrationTest {
     }
 
     @Test
-    public void z_deleteById() throws Exception {
-        final ResponseEntity<String> responseEntity = restTemplate.exchange(HTTP_LOCALHOST + port + V_1_PERSONS + VALID_ID, HttpMethod.DELETE, null,
+    public void deleteById() {
+        ResponseEntity<String> responseEntity = restTemplate.exchange(HTTP_LOCALHOST + port + V_1_PERSONS + VALID_ID, HttpMethod.DELETE, null,
                 String.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Integer deleted = jdbcTemplate.queryForObject("SELECT DELETED FROM PERSON WHERE id = " + VALID_ID, Integer.class);
@@ -131,8 +128,8 @@ public class PersonControllerTest extends SpringBootIntegrationTest {
     }
 
     @Test
-    public void z_deleteById_withInvalidId() throws Exception {
-        final ResponseEntity<String> responseEntity = restTemplate.exchange(HTTP_LOCALHOST + port + V_1_PERSONS + INVALID_ID, HttpMethod.DELETE, null,
+    public void deleteById_withInvalidId() {
+        ResponseEntity<String> responseEntity = restTemplate.exchange(HTTP_LOCALHOST + port + V_1_PERSONS + INVALID_ID, HttpMethod.DELETE, null,
                 String.class);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }

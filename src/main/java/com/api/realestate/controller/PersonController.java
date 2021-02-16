@@ -2,13 +2,13 @@ package com.api.realestate.controller;
 
 import com.api.realestate.entity.dto.IdDTO;
 import com.api.realestate.entity.dto.PersonDTO;
+import com.api.realestate.entity.mapper.PersonMapper;
 import com.api.realestate.service.PersonService;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/persons")
@@ -22,14 +22,12 @@ public class PersonController {
 
     @GetMapping("/{id}")
     public PersonDTO findById(@PathVariable Long id) throws NotFoundException {
-        return new PersonDTO(personService.findById(id));
+        return PersonMapper.unmarshall(personService.findById(id));
     }
 
     @GetMapping("")
     public List<PersonDTO> findPersons() {
-        return personService.findAll().stream()
-                .map(PersonDTO::new)
-                .collect(Collectors.toList());
+        return PersonMapper.unmarshall(personService.findAll());
     }
 
     @PutMapping("/{id}")
