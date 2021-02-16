@@ -1,8 +1,6 @@
 package com.api.realestate.service;
 
 import com.api.realestate.entity.Person;
-import com.api.realestate.entity.dto.PersonDTO;
-import com.api.realestate.entity.mapper.PersonMapper;
 import com.api.realestate.repository.PersonRepository;
 import javassist.NotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,9 +20,8 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public Long create(PersonDTO personDTO) {
-        personDTO.setPassword(bCryptPasswordEncoder.encode(personDTO.getPassword()));
-        Person person = PersonMapper.marshall(personDTO);
+    public Long create(Person person) {
+        person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
         return personRepository.save(person).getId();
     }
 
@@ -37,15 +34,15 @@ public class PersonService {
         return personList;
     }
 
-    public void update(PersonDTO personDTO) throws NotFoundException {
-        Person person = personRepository.findById(personDTO.getId()).orElseThrow(() -> new NotFoundException("Couldn't load index set with ID <" + personDTO.getId() + ">"));
-        verifyIfPasswordChanged(personDTO, person.getPassword());
-        personRepository.save(PersonMapper.marshall(personDTO));
+    public void update(Person person) throws NotFoundException {
+        Person personFromDb = personRepository.findById(person.getId()).orElseThrow(() -> new NotFoundException("Couldn't load index set with ID <" + person.getId() + ">"));
+        verifyIfPasswordChanged(person, person.getPassword());
+        personRepository.save(person);
     }
 
-    private void verifyIfPasswordChanged(PersonDTO personDTO, String password) {
-        if (!personDTO.getPassword().equals(password)) {
-            personDTO.setPassword(bCryptPasswordEncoder.encode(personDTO.getPassword()));
+    private void verifyIfPasswordChanged(Person person, String password) {
+        if (!person.getPassword().equals(password)) {
+            person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
         }
     }
 

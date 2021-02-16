@@ -33,13 +33,13 @@ public class PersonController {
     @PutMapping("/{id}")
     public void update(@PathVariable Long id, @RequestBody PersonDTO personDTO) throws NotFoundException {
         personDTO.setId(id);
-        personService.update(personDTO);
+        personService.update(PersonMapper.marshall(personDTO));
     }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public IdDTO create(@RequestBody PersonDTO personDTO) {
-        return new IdDTO(personService.create(personDTO));
+        return new IdDTO(personService.create(PersonMapper.marshall(personDTO)));
     }
 
     @DeleteMapping("/{id}")
