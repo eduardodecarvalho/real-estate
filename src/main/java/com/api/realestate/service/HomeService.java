@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PersonService {
+public class HomeService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private PersonRepository personRepository;
 
-    public PersonService(BCryptPasswordEncoder bCryptPasswordEncoder, PersonRepository personRepository) {
+    public HomeService(BCryptPasswordEncoder bCryptPasswordEncoder, PersonRepository personRepository) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.personRepository = personRepository;
     }

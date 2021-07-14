@@ -2,7 +2,8 @@ version: '3.6'
 services:
   mysql:
     image: mysql:5.7.26
-    container_name: mysql_real_estate
+    container_name: mysql_docker
+    restart: always
     environment:
       - MYSQL_HOST=localhost
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
@@ -10,9 +11,33 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
+      - MYSQL_CLIENT_PORT=3306
       - TZ=America/Fortaleza
-    command: mysqld --lower_case_table_names=1 --sql-mode="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" --skip-ssl
+    command: mysqld --lower_case_table_names=1 --sql-mode="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" --skip-ssl --innodb-use-native-aio=0
     ports:
       - "3306:3306"
     volumes:
       - "./data/mysql/:/var/lib/mysql"
+
+  real-estate:
+    container_name: real-estate_docker
+#    restart: always
+    build:
+      context: target/real-estate-0.0.1-SNAPSHOT.jar
+#        dockerfile: Dockerfile
+    image: real-estate:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_docker:3306/customer?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+networks:
+  default:
+    external:
+      name: real-estate-network

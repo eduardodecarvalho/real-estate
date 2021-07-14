@@ -1,2 +1,4 @@
-package com.api.realestate.entity;public class Home {
+package com.api.realestate.entity;
+
+public class Home {
 }

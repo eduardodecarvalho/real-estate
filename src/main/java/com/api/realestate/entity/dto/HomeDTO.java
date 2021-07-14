@@ -4,7 +4,7 @@ import com.api.realestate.entity.Person;
 
 import java.io.Serializable;
 
-public class PersonDTO implements Serializable {
+public class HomeDTO implements Serializable {
 
     private Long id;
     private String name;
@@ -12,18 +12,18 @@ public class PersonDTO implements Serializable {
     private String password;
     private Integer personRole;
 
-    public PersonDTO() {
+    public HomeDTO() {
 
     }
 
-    public PersonDTO(Long id, String name, String email, String password) {
+    public HomeDTO(Long id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
-    public PersonDTO(Person person) {
+    public HomeDTO(Person person) {
         this.id = person.getId();
         this.name = person.getName();
         this.email = person.getEmail();
