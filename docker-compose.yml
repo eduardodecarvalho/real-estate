@@ -9,7 +9,7 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_DATABASE=mysql_real_estate
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=root
+      # - MYSQL_USER=root
       - MYSQL_PASSWORD=root
       - MYSQL_CLIENT_PORT=3306
       - TZ=America/Fortaleza
@@ -20,18 +20,12 @@ services:
       - "./data/mysql/:/var/lib/mysql"
 
   real-estate:
-    container_name: real-estate_docker
-#    restart: always
-    build:
-      context: target/real-estate-0.0.1-SNAPSHOT.jar
-#        dockerfile: Dockerfile
     image: real-estate:latest
+    container_name: real-estate_docker
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_docker:3306/customer?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-
-
     ports:
       - "8080:8080"
     depends_on:
@@ -40,4 +34,4 @@ services:
 networks:
   default:
     external:
-      name: real-estate-network
+      name: little-store_default
